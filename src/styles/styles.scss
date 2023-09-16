@@ -1,7 +1,10 @@
-@import "@angular/material/prebuilt-themes/indigo-pink.css";
 //@use  '@angular/material' as mat;
 //
 //$my-palette: mat.$indigo-palette;
+@import "../../node_modules/@angular/material/prebuilt-themes/indigo-pink.css";
+
+
+
 * {
   font-family: Montserrat, sans-serif;
 }
