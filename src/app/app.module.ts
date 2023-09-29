@@ -19,32 +19,45 @@ import { SidenavListComponent } from './navigation/sidenav-list/sidenav-list.com
 import { StopTrainingComponent } from './training/current-training/stop-training/stop-training.component';
 import { AuthService } from "./auth/auth.service";
 import { TrainingService } from "./training/training.service";
+import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
+import { environment } from '../environments/environment';
+import { provideAuth, getAuth } from '@angular/fire/auth';
+import { provideFirestore, getFirestore } from '@angular/fire/firestore';
+import { FIREBASE_OPTIONS } from "@angular/fire/compat";
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    SignupComponent,
-    LoginComponent,
-    TrainingComponent,
-    CurrentTrainingComponent,
-    NewTrainingComponent,
-    PastTrainingsComponent,
-    WelcomeComponent,
-    HeaderComponent,
-    SidenavListComponent,
-    StopTrainingComponent
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    MaterialModule,
-    HammerModule,
-    FlexLayoutModule,
-    FormsModule,
-    ReactiveFormsModule,
-  ],
-  providers: [AuthService, TrainingService],
-  bootstrap: [AppComponent],
+    declarations: [
+        AppComponent,
+        SignupComponent,
+        LoginComponent,
+        TrainingComponent,
+        CurrentTrainingComponent,
+        NewTrainingComponent,
+        PastTrainingsComponent,
+        WelcomeComponent,
+        HeaderComponent,
+        SidenavListComponent,
+        StopTrainingComponent
+    ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        MaterialModule,
+        HammerModule,
+        FlexLayoutModule,
+        FormsModule,
+        ReactiveFormsModule,
+        provideFirebaseApp(() => initializeApp(environment.firebase)),
+        provideAuth(() => getAuth()),
+        provideFirestore(() => getFirestore()),
+    ],
+    providers: [
+        AuthService,
+        TrainingService,
+        { provide: FIREBASE_OPTIONS, useValue: environment.firebase }
+    ],
+    bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {
+}
