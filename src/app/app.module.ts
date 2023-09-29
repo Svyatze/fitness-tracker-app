@@ -42,7 +42,7 @@ import { TrainingService } from "./training/training.service";
     HammerModule,
     FlexLayoutModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
   ],
   providers: [AuthService, TrainingService],
   bootstrap: [AppComponent],
