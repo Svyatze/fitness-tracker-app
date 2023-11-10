@@ -1,6 +1,6 @@
 import {Exercise} from "./exercise.model";
 import {Injectable} from "@angular/core";
-import {Subject} from "rxjs";
+import {Subject, Subscription} from "rxjs";
 import {AngularFirestore} from "@angular/fire/compat/firestore";
 import {map} from "rxjs/operators";
 
@@ -12,6 +12,7 @@ export class TrainingService {
   private availableExercises: Exercise[] = [];
   //@ts-ignore
   private runningExercise: Exercise | null;
+  private fbSubs: Subscription[] = [];
 
   constructor(
     private db: AngularFirestore
@@ -19,22 +20,22 @@ export class TrainingService {
   }
 
   fetchAvailableExercises() {
-    this.db
+    this.fbSubs.push(this.db
       .collection('availableExercises')
       .snapshotChanges().pipe(
-      map(docArray => {
-        return docArray.map(doc => {
-          return {
-            id: doc.payload.doc.id,
-            //@ts-ignore
-            ...doc.payload.doc.data()
-          };
+        map(docArray => {
+          return docArray.map(doc => {
+            return {
+              id: doc.payload.doc.id,
+              //@ts-ignore
+              ...doc.payload.doc.data()
+            };
+          })
         })
-      })
-    ).subscribe((exercises: Exercise[]) => {
-      this.availableExercises = exercises
-      this.exercisesChanged.next([...this.availableExercises])
-    })
+      ).subscribe((exercises: Exercise[]) => {
+        this.availableExercises = exercises
+        this.exercisesChanged.next([...this.availableExercises])
+      }))
   }
 
   startExercise(selectedId: string) {
@@ -78,13 +79,17 @@ export class TrainingService {
   }
 
   fetchCompletedOrCancelledExercises() {
-    this.db
+    this.fbSubs.push(this.db
       .collection('finishedExercises')
       .valueChanges()
       .subscribe((value: unknown[]) => {
         const exercises = value as Exercise[];
         this.finishedExercisesChanged.next(exercises);
-      });
+      }));
+  }
+
+  cancelSubscriptions() {
+    this.fbSubs.forEach(subscription => subscription.unsubscribe());
   }
 
   private addDataToDatabase(exercise: Exercise) {
