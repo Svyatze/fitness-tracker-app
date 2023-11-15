@@ -16,7 +16,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     password: ['', Validators.required],
   });
   isLoading = false;
-  private loadingSubs = new Subscription();
+  private loadingSubscription = new Subscription();
 
   constructor(
     private fb: FormBuilder,
@@ -26,12 +26,12 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.loadingSubs = this.uiService.loadingStateChanged.subscribe(isLoading =>
+    this.loadingSubscription = this.uiService.loadingStateChanged.subscribe(isLoading =>
       this.isLoading = isLoading)
   }
 
   ngOnDestroy() {
-    this.loadingSubs.unsubscribe();
+    this.loadingSubscription.unsubscribe();
   }
 
 
